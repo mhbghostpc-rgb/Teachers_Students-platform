@@ -1,113 +1,230 @@
-import Image from 'next/image'
+"use client"
 
-export default function Home() {
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { 
+  GraduationCap, 
+  User, 
+  Users, 
+  Star, 
+  BookOpen,
+  ArrowLeft,
+  Shield,
+  Award,
+  Clock
+} from 'lucide-react'
+import { AdsCarousel } from '@/components/shared/AdsCarousel'
+
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            "name": "دليل المدرسين",
+            "alternateName": "دليل المعلمين في أسوان",
+            "url": "https://teachers-directory-aswan.com",
+            "description": "دليلك الشامل للبحث عن أحسن وأشهر المدرسين في أسوان لجميع المراحل (الابتدائي، الاعدادي، الثانوي، واللغات).",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "أسوان",
+              "addressRegion": "أسوان",
+              "addressCountry": "EG"
+            },
+            "sameAs": [
+              "https://www.facebook.com/AswanTeachersDir"
+            ]
+          })
+        }}
+      />
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-secondary-500/10 animate-pulse-slow" />
+        
+        <div className="container mx-auto px-4 py-16 md:py-24 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            <motion.div
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="inline-block p-3 bg-primary-100 rounded-full mb-6"
+            >
+              <GraduationCap className="h-12 w-12 text-primary-600" />
+            </motion.div>
+            
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-primary-700 leading-normal pb-2">
+              دليل المدرسين في جمهورية مصر
+            </h1>
+            <h2 className="text-2xl md:text-4xl font-semibold mb-6 text-gray-800 leading-normal">
+              ابحث عن أحسن المعلمين
+            </h2>
+            
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+              ابحث عن أشهر مدرس في منطقتك، ابتدائي، اعدادي، ثانوي، لغات وتعرف على النتيجة والتنسيق
+            </p>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-12">
+              {[
+                { icon: Users, label: 'معلمين', value: '500+' },
+                { icon: BookOpen, label: 'مواد', value: '30+' },
+                { icon: Star, label: 'تقييمات', value: '2,500+' },
+                { icon: Shield, label: 'موثوق', value: '100%' }
+              ].map((stat, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-white/70 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/40"
+                >
+                  <stat.icon className="h-6 w-6 text-primary-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-gray-800">{stat.value}</div>
+                  <div className="text-sm text-gray-500">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/student/search">
+                <Button variant="gradient" size="lg" className="text-white px-8 h-14 text-lg">
+                  <User className="ml-2 h-5 w-5" />
+                  أنا طالب أبحث عن معلم
+                  <ArrowLeft className="mr-2 h-5 w-5" />
+                </Button>
+              </Link>
+              
+              <Link href="/register">
+                <Button variant="outline" size="lg" className="border-2 border-primary-600 text-primary-600 hover:bg-primary-50 h-14 text-lg bg-white">
+                  <GraduationCap className="ml-2 h-5 w-5" />
+                  أنا معلم وأريد التسجيل
+                  <ArrowLeft className="mr-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
         </div>
-      </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+        {/* Decorative Elements */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-primary-300/20 rounded-full blur-3xl animate-float pointer-events-none" />
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary-300/20 rounded-full blur-3xl animate-float delay-1000 pointer-events-none" />
+      </section>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+      {/* Ads Carousel */}
+      <AdsCarousel />
+
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            لماذا تختار منصتنا؟
           </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            نقدم لك تجربة متكاملة للعثور على أفضل المعلمين
           </p>
-        </a>
+        </motion.div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              icon: Award,
+              title: 'معلمون موثوقون',
+              description: 'جميع المعلمين مسجلون وموثوقون من قبل فريقنا لضمان جودة التعليم.'
+            },
+            {
+              icon: Star,
+              title: 'تقييمات حقيقية',
+              description: 'تقييمات شفافة من طلاب حقيقيين بعد مراجعتها والموافقة عليها.'
+            },
+            {
+              icon: Clock,
+              title: 'مرونة في التعلم',
+              description: 'اختر بين التعليم أونلاين أو الحضوري حسب رغبتك وفي الوقت المناسب.'
+            }
+          ].map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
+              viewport={{ once: true }}
+            >
+              <Card className="h-full hover:shadow-xl transition-all duration-300 border border-gray-100 bg-white/80 backdrop-blur-sm">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <feature.icon className="h-8 w-8 text-primary-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+      {/* How It Works */}
+      <section className="bg-gradient-to-r from-primary-600 to-secondary-600 py-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center text-white mb-12"
+          >
+            <h2 className="text-3xl font-bold mb-4">
+              كيف تعمل المنصة؟
+            </h2>
+            <p className="text-white/80 max-w-2xl mx-auto">
+              ثلاث خطوات بسيطة لتبدأ رحلة التعلم مع أفضل المعلمين
+            </p>
+          </motion.div>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { step: '١', title: 'اختر المرحلة والمادة', desc: 'حدد المرحلة الدراسية والمادة التي تبحث عنها والمدينة.' },
+              { step: '٢', title: 'تصفح المعلمين', desc: 'شاهد قائمة المعلمين مرتبة حسب التقييم واختر الأنسب لك.' },
+              { step: '٣', title: 'تواصل مع المعلم', desc: 'اتصل أو تواصل عبر الواتساب مباشرة وابدأ التعلم.' }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="text-center text-white"
+              >
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 border-2 border-white/30">
+                  {item.step}
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                <p className="text-white/80 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }
