@@ -14,7 +14,15 @@ export async function generateMetadata(
   
   const { data: teacher } = await supabase
     .from('teachers')
-    .select('*')
+    .select(`
+      *,
+      teacher_stages (
+        stage: educational_stages(name)
+      ),
+      teacher_subjects (
+        subject: subjects(name)
+      )
+    `)
     .eq('id', id)
     .single()
 
@@ -24,24 +32,27 @@ export async function generateMetadata(
     }
   }
 
+  const subjects = teacher.teacher_subjects?.map((ts: any) => ts.subject?.name).join(' و ') || 'المواد الدراسية'
+  const stages = teacher.teacher_stages?.map((ts: any) => ts.stage?.name).join(' و ') || 'المراحل الدراسية'
+
   // Define keywords combining general SEO + Teacher specifics
   const keywords = [
     teacher.display_name,
-    `مدرس ${teacher.subject}`,
-    `احسن مدرس ${teacher.subject}`,
-    `اشهر مدرس ${teacher.subject} اسوان`,
-    `مدرس ${teacher.subject} ${teacher.stage}`,
+    `مدرس ${subjects}`,
+    `احسن مدرس ${subjects}`,
+    `اشهر مدرس ${subjects} اسوان`,
+    `مدرس ${subjects} ${stages}`,
     teacher.city,
     'مدرسين', 'مدرسين اسوان', 'معلم', 'دليل المعلمين'
   ].join(', ')
 
   return {
-    title: `${teacher.display_name} | أحسن وأشهر مدرس ${teacher.subject} في أسوان`,
-    description: `احجز مع الأستاذ ${teacher.display_name}، أشهر مدرس ${teacher.subject} للمرحلة ${teacher.stage} في ${teacher.city} (${teacher.area}). تعرف على التقييمات وتواصل مباشرة.`,
+    title: `${teacher.display_name} | أحسن وأشهر مدرس ${subjects} في أسوان`,
+    description: `احجز مع الأستاذ ${teacher.display_name}، أشهر مدرس ${subjects} للمرحلة ${stages} في ${teacher.city} (${teacher.area}). تعرف على التقييمات وتواصل مباشرة.`,
     keywords: keywords,
     openGraph: {
-      title: `${teacher.display_name} - مدرس ${teacher.subject}`,
-      description: `تعرف على تقييمات ${teacher.display_name}، مدرس ${teacher.subject} بأسوان`,
+      title: `${teacher.display_name} - مدرس ${subjects}`,
+      description: `تعرف على تقييمات ${teacher.display_name}، مدرس ${subjects} بأسوان`,
       type: 'profile',
       images: teacher.profile_image ? [teacher.profile_image] : [],
     }

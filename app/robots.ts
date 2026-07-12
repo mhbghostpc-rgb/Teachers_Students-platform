@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://teachers-directory-aswan.com'
+  
   return {
     rules: {
       userAgent: '*',
@@ -11,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         '/api/'
       ],
     },
-    sitemap: 'https://teachers-directory-aswan.com/sitemap.xml', // Replace with your production URL
+    sitemap: `${baseUrl}/sitemap.xml`,
   }
 }

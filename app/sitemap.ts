@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://teachers-directory-aswan.com' // Replace with your production URL
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://teachers-directory-aswan.com'
   const supabase = createClient()
 
   // Fetch all approved teachers

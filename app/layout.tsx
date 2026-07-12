@@ -7,7 +7,10 @@ import './globals.css'
 
 const cairo = Cairo({ subsets: ['arabic'], variable: '--font-cairo' })
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://teachers-directory-aswan.com'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: {
     default: 'دليل المدرسين في أسوان | ابحث عن أحسن المعلمين',
     template: '%s | دليل المدرسين'
@@ -25,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'ar_SA',
-    url: 'https://teachers-directory-aswan.com', // Replace with real URL
+    url: baseUrl,
     title: 'دليل المدرسين في أسوان | ابحث عن أحسن المعلمين',
     description: 'ابحث عن أفضل المعلمين في منطقتك، قيّمهم واختر الأنسب لك للمرحلة الابتدائية والاعدادية والثانوية',
     siteName: 'دليل المدرسين',

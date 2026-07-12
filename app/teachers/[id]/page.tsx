@@ -95,8 +95,33 @@ export default async function TeacherProfilePage({ params }: { params: { id: str
     home_visit: 'زيارة منزلية'
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: teacher.display_name,
+    jobTitle: `مدرس ${subjects.join(' و ')}`,
+    description: teacher.bio || `مدرس ${subjects.join(' و ')} للمرحلة ${stages.join(' و ')} في أسوان.`,
+    url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://teachers-directory-aswan.com'}/teachers/${teacher.id}`,
+    image: teacher.profile_image,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: teacher.city,
+      addressRegion: 'Aswan',
+      addressCountry: 'EG'
+    },
+    aggregateRating: totalReviews > 0 ? {
+      '@type': 'AggregateRating',
+      ratingValue: teacher.rating,
+      reviewCount: totalReviews
+    } : undefined
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Premium Cover Banner */}
       <div className="h-56 md:h-72 bg-gradient-to-r from-primary-800 via-primary-600 to-secondary-600 w-full relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 mix-blend-overlay"></div>
