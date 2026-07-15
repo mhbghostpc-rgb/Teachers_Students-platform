@@ -172,6 +172,7 @@ export function AdminSidebar() {
           <span className="font-medium">تسجيل الخروج</span>
         </button>
       </div>
+    </div>
     </>
   )
 }
