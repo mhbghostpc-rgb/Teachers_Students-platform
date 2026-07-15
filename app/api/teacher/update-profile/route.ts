@@ -1,8 +1,30 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { z } from 'zod'
+import { rateLimiter } from '@/lib/rate-limit'
+
+const updateProfileSchema = z.object({
+  display_name: z.string().min(2, 'الاسم يجب أن يكون أكثر من حرفين').max(100, 'الاسم طويل جداً').optional(),
+  phone: z.string().max(20).optional().nullable(),
+  whatsapp: z.string().max(20).optional().nullable(),
+  city: z.string().max(100).optional().nullable(),
+  area: z.string().max(100).optional().nullable(),
+  teaching_type: z.string().max(50).optional().nullable(),
+  profile_image: z.string().url().optional().nullable().or(z.literal('')),
+  about: z.string().max(2000, 'النبذة يجب ألا تتجاوز 2000 حرف').optional().nullable(),
+  price_per_session: z.union([z.string(), z.number()]).optional().nullable(),
+  experience_years: z.union([z.string(), z.number()]).optional().nullable(),
+  video_url: z.string().url().optional().nullable().or(z.literal('')),
+  booking_url: z.string().url().optional().nullable().or(z.literal('')),
+})
 
 export async function PUT(request: Request) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    if (!rateLimiter.limit(ip, 20, 60000)) {
+      return NextResponse.json({ error: 'طلبات كثيرة جداً، يرجى المحاولة بعد قليل' }, { status: 429 })
+    }
+
     const supabase = createClient()
     const { data: { session } } = await supabase.auth.getSession()
 
@@ -16,7 +38,13 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'صلاحيات غير كافية' }, { status: 403 })
     }
 
-    const data = await request.json()
+    const rawData = await request.json()
+    const parseResult = updateProfileSchema.safeParse(rawData)
+    if (!parseResult.success) {
+      return NextResponse.json({ error: 'بيانات غير صالحة', details: parseResult.error.errors }, { status: 400 })
+    }
+
+    const data = parseResult.data
 
     // Data to update
     const updateData = {
@@ -37,7 +65,7 @@ export async function PUT(request: Request) {
     const { error: updateError } = await supabase
       .from('teachers')
       .update(updateData)
-      .eq('user_id', session.user.id)
+      .eq('user_id', session.user.id) // Implicit RLS check due to user_id match + session match
 
     if (updateError) {
       console.error('Update teacher error:', updateError)
