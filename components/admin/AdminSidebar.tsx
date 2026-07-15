@@ -22,7 +22,9 @@ import {
   Activity,
   LogOut,
   UserCheck,
-  Inbox
+  Inbox,
+  Menu,
+  X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -55,6 +57,7 @@ export function AdminSidebar() {
   const router = useRouter()
   const supabase = createClient()
   const [hasUnreadSupport, setHasUnreadSupport] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     const checkUnread = async () => {
@@ -78,12 +81,38 @@ export function AdminSidebar() {
   }
 
   return (
-    <div className="w-72 bg-white min-h-screen border-l border-gray-100 flex flex-col relative z-20 shadow-[0_0_40px_rgba(0,0,0,0.02)]">
-      <div className="flex items-center justify-center h-28 shrink-0">
-        <h1 className="text-3xl font-light tracking-tight text-gray-800">
-          إدارة <span className="font-bold elegant-text">المنصة</span>
-        </h1>
-      </div>
+    <>
+      <button 
+        className="md:hidden fixed top-4 right-4 z-40 p-2 bg-white rounded-lg shadow-md border border-gray-100 text-gray-700"
+        onClick={() => setIsOpen(true)}
+      >
+        <Menu className="w-6 h-6" />
+      </button>
+
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <div className={cn(
+        "w-72 bg-white min-h-screen border-l border-gray-100 flex flex-col shadow-[0_0_40px_rgba(0,0,0,0.02)]",
+        "fixed md:relative z-50 transition-transform duration-300 right-0",
+        isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
+      )}>
+        <button 
+          className="md:hidden absolute top-4 left-4 p-2 text-gray-500 hover:text-gray-800"
+          onClick={() => setIsOpen(false)}
+        >
+          <X className="w-6 h-6" />
+        </button>
+        
+        <div className="flex items-center justify-center h-28 shrink-0">
+          <h1 className="text-3xl font-light tracking-tight text-gray-800">
+            إدارة <span className="font-bold elegant-text">المنصة</span>
+          </h1>
+        </div>
 
       <div className="flex-1 overflow-y-auto px-6 py-2 scrollbar-hide">
         <nav className="space-y-2">
@@ -93,6 +122,7 @@ export function AdminSidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={() => setIsOpen(false)}
                 className={cn(
                   'relative flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 group',
                   !isActive && 'hover:bg-gray-50'
@@ -142,6 +172,6 @@ export function AdminSidebar() {
           <span className="font-medium">تسجيل الخروج</span>
         </button>
       </div>
-    </div>
+    </>
   )
 }

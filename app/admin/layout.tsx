@@ -38,13 +38,13 @@ export default async function AdminLayout({
       <AdminSidebar />
       
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-full relative z-10">
+      <div className="flex-1 flex flex-col h-full relative z-10 w-full overflow-hidden">
         
         {/* Elegant Top Header */}
-        <header className="px-12 py-8 flex justify-between items-center bg-transparent">
+        <header className="px-4 md:px-12 py-4 md:py-8 flex justify-between items-center bg-transparent mt-12 md:mt-0">
           <div>
-            <h2 className="text-3xl font-light tracking-tight elegant-text">إدارة المنصة</h2>
-            <p className="text-sm text-gray-500 mt-2 font-medium">مرحباً بعودتك، مدير النظام</p>
+            <h2 className="text-2xl md:text-3xl font-light tracking-tight elegant-text">إدارة المنصة</h2>
+            <p className="text-xs md:text-sm text-gray-500 mt-2 font-medium">مرحباً بعودتك، مدير النظام</p>
           </div>
           
           <div className="flex items-center gap-6">
@@ -59,7 +59,7 @@ export default async function AdminLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto px-12 pb-12">
+        <main className="flex-1 overflow-auto px-4 md:px-12 pb-12 w-full">
           {children}
         </main>
       </div>
