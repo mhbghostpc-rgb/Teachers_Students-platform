@@ -89,7 +89,7 @@ export function SearchFilters({ onFilterChange }: SearchFiltersProps) {
               <SelectTrigger>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" side="bottom" avoidCollisions={false}>
                 {CITIES.map(city => (
                   <SelectItem key={city} value={city}>{city}</SelectItem>
                 ))}

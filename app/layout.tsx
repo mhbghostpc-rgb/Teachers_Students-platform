@@ -3,6 +3,7 @@ import { Cairo } from 'next/font/google'
 import { Header } from '@/components/shared/Header'
 import { Footer } from '@/components/shared/Footer'
 import { Toaster } from '@/components/ui/toaster'
+import PromoBanner from '@/components/PromoBanner'
 import './globals.css'
 
 const cairo = Cairo({ subsets: ['arabic'], variable: '--font-cairo' })
@@ -62,6 +63,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className={`${cairo.variable} font-sans min-h-screen flex flex-col bg-gray-50`}>
+        <PromoBanner />
         <Header />
         <main className="flex-1">
           {children}
