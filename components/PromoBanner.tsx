@@ -3,12 +3,13 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaClock, FaTimes, FaInfoCircle, FaCheckCircle, FaUserGraduate, FaChalkboardTeacher } from 'react-icons/fa';
 
-function CountdownTimer() {
+function CountdownTimer({ onEnd }: { onEnd: () => void }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    // Set the target date to 7 days from today (July 15, 2026 -> July 22, 2026)
-    const targetDate = new Date('2026-07-22T23:59:59').getTime();
+    const envDate = process.env.NEXT_PUBLIC_PROMO_END_DATE;
+    const targetDate = new Date(envDate || '2026-07-22T23:59:59Z').getTime();
+    let ended = false;
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -23,6 +24,10 @@ function CountdownTimer() {
         });
       } else {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        if (!ended) {
+          ended = true;
+          onEnd();
+        }
       }
     };
 
@@ -45,8 +50,40 @@ function CountdownTimer() {
 export default function PromoBanner() {
   const [isVisible, setIsVisible] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEnded, setIsEnded] = useState(false);
 
-  if (!isVisible) return null;
+  useEffect(() => {
+    // Check initial state
+    const envDate = process.env.NEXT_PUBLIC_PROMO_END_DATE;
+    const targetDate = new Date(envDate || '2026-07-22T23:59:59Z').getTime();
+    if (new Date().getTime() >= targetDate) {
+      setIsVisible(false);
+      setIsEnded(true);
+    }
+  }, []);
+
+  const handleEnd = async () => {
+    setIsVisible(false);
+    setIsModalOpen(false);
+    if (!isEnded) {
+      setIsEnded(true);
+      try {
+        await fetch('/api/admin/alerts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: 'انتهاء العرض الترويجي ⏰',
+            message: 'لقد انتهى وقت العرض الترويجي المجاني المحدد مسبقاً، وتم إخفاء البانر الإعلاني من الموقع تلقائياً بنجاح.',
+            type: 'warning'
+          })
+        });
+      } catch (err) {
+        console.error('Failed to send alert', err);
+      }
+    }
+  };
+
+  if (!isVisible || isEnded) return null;
 
   return (
     <>
@@ -67,7 +104,7 @@ export default function PromoBanner() {
             <div className="flex items-center gap-2 bg-slate-900/10 px-3 py-1 rounded-full backdrop-blur-sm">
               <FaClock className="animate-pulse" />
               <span>ينتهي التسجيل المجاني بعد:</span>
-              <CountdownTimer />
+              <CountdownTimer onEnd={handleEnd} />
             </div>
 
             <button 
